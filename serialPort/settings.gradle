@@ -1,0 +1,2 @@
+include ':app', ':usb-serial-for-android-v010'
+rootProject.name='serialPort'

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:id="@+id/accelerateSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:layout_marginStart="16dp"
+            android:text="加速度数据"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <TextView
+            android:id="@+id/sensorList"
+            android:layout_width="235dp"
+            android:layout_height="146dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="传感器列表"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="104dp"
+            android:layout_height="39dp"
+            android:onClick="onClick"
+            android:text="@string/string"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sensorList"
+            app:layout_constraintTop_toTopOf="@+id/sensorList" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="加速度传感器"
+            app:layout_constraintStart_toStartOf="@+id/accelerateSensor"
+            app:layout_constraintTop_toBottomOf="@+id/sensorList" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="方向传感器"
+            app:layout_constraintStart_toStartOf="@+id/accelerateSensor"
+            app:layout_constraintTop_toBottomOf="@+id/accelerateSensor" />
+
+        <TextView
+            android:id="@+id/orientationSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="需要加速度传感器和地磁传感器计算得到"
+            app:layout_constraintStart_toStartOf="@+id/accelerateSensor"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="陀螺仪传感器"
+            app:layout_constraintStart_toStartOf="@+id/orientationSensor"
+            app:layout_constraintTop_toBottomOf="@+id/orientationSensor" />
+
+        <TextView
+            android:id="@+id/gyroscopeSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/orientationSensor"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="磁场传感器"
+            app:layout_constraintStart_toStartOf="@+id/gyroscopeSensor"
+            app:layout_constraintTop_toBottomOf="@+id/gyroscopeSensor" />
+
+        <TextView
+            android:id="@+id/magnetSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/textView6"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="重力传感器"
+            app:layout_constraintStart_toStartOf="@+id/magnetSensor"
+            app:layout_constraintTop_toBottomOf="@+id/magnetSensor" />
+
+        <TextView
+            android:id="@+id/gravitySensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/textView8"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="光传感器"
+            app:layout_constraintStart_toStartOf="@+id/gravitySensor"
+            app:layout_constraintTop_toBottomOf="@+id/gravitySensor" />
+
+        <TextView
+            android:id="@+id/lightSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:text="心率传感器"
+            app:layout_constraintStart_toStartOf="@+id/lightSensor"
+            app:layout_constraintTop_toBottomOf="@+id/lightSensor" />
+
+        <TextView
+            android:id="@+id/heartrateSensor"
+            android:layout_width="373dp"
+            android:layout_height="89dp"
+            android:text="代码没写"
+            app:layout_constraintStart_toStartOf="@+id/textView10"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="211dp"
+            android:layout_height="220dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button"
+            app:srcCompat="@drawable/direction" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">sensor</string>
+    <string name="string">获取传感器列表</string>
+</resources>
