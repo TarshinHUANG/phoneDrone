@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String TAG = MainActivity.class.getName();
     private String[] titleList = {"Sensor Information", "USBSerial Test", "Start Project"};
     private String[] descList = {"Click to get sensor infomation of this phone", "Click to test USBSerial","Click to start mission"};
+    private TextView titleTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +30,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        titleTv.setText(R.string.app_name);
+    }
+
     private void initUI() {
-        TextView titleTv = (TextView) findViewById(R.id.titleTv);
+        titleTv = (TextView) findViewById(R.id.titleTv);
         ImageButton returnBtn = (ImageButton) findViewById(R.id.returnBtn);
         ListView listView = (ListView) findViewById(R.id.listView);
 

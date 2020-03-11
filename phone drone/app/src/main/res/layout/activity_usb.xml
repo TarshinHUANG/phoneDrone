@@ -3,5 +3,112 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/mainRl"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBlack">
+
+        <ImageButton
+            android:id="@+id/returnBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/selector_back_button" />
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="false"
+            android:text="@string/app_name"
+            android:textColor="@color/colorWhite"
+            android:textSize="21sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainRl"
+        android:layout_marginTop="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/usbdevice_tv"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/no_device"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/usb_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="please input here"
+            android:inputType="textPersonName" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/search_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SEARCH" />
+
+            <Button
+                android:id="@+id/send_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/search_btn"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/open_btn"
+                android:text="SEND" />
+
+            <TextView
+                android:id="@+id/usbmessage_tv"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/search_btn"
+                android:text="Message"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/open_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/search_btn"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/search_btn"
+                android:text="OPEN" />
+
+            <TextView
+                android:id="@+id/receive_tv"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/usbmessage_tv"
+                android:text="Receive message"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/clear_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/search_btn"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/send_btn"
+                android:text="CLEAR" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>
