@@ -63,6 +63,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         gyroscopeTv = (TextView) findViewById(R.id.gyroscope_tv);
         accelerometerTv = (TextView) findViewById(R.id.accelerometer_tv);
         orientationTv = (TextView) findViewById(R.id.orientation_tv);
+        ((TextView) findViewById(R.id.titleTv)).setText(R.string.sensor_activity);
         ImageButton returnBtn = (ImageButton) findViewById(R.id.returnBtn);
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override

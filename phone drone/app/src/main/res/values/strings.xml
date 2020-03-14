@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PhoneDrone</string>
+    <string name="sensor_activity">SensorInfo</string>
+    <string name="usb_activity">USBSerial</string>
+    <string name="start_activity">MainMission</string>
+    <string name="no_device">No device found</string>
+
 </resources>
