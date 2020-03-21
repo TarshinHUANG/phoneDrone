@@ -142,7 +142,7 @@ public class USBActivity extends AppCompatActivity implements View.OnClickListen
         if (device == null) {
             showToast("No device found!");
         } else {
-            if (serialPort != null) {
+            if (serialPort != null && serialPort.isOpen()) {
                 showToast("There is already a SerialPort");
                 return;
             }
@@ -154,11 +154,12 @@ public class USBActivity extends AppCompatActivity implements View.OnClickListen
                 serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
                 if (serialPort != null) {
                     if (serialPort.open()) { //Set Serial Connection Parameters.
-                        serialPort.setBaudRate(9600);
+                        serialPort.setBaudRate(115200);
                         serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
                         serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
                         serialPort.setParity(UsbSerialInterface.PARITY_NONE);
                         serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+                        serialPort.read(mCallback);
                         showToast("SerialPort open");
                     }
                 }
@@ -239,7 +240,7 @@ public class USBActivity extends AppCompatActivity implements View.OnClickListen
                     serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
                     if (serialPort != null) {
                         if (serialPort.open()) { //Set Serial Connection Parameters.
-                            serialPort.setBaudRate(9600);
+                            serialPort.setBaudRate(115200);
                             serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
                             serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
                             serialPort.setParity(UsbSerialInterface.PARITY_NONE);

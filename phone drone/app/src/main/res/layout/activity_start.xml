@@ -34,4 +34,438 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/pid_LL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainRl"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/pitch_angle_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pitch_angle"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pitch_angle_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_angle_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/pitch_angle_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_angle_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/pitch_angle_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_angle_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/pitch_speed_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pitch_speed"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pitch_speed_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_speed_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/pitch_speed_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_speed_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/pitch_speed_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/pitch_speed_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/roll_angle_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/roll_angle"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/roll_angle_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_angle_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/roll_angle_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_angle_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/roll_angle_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_angle_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/roll_speed_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/roll_speed"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/roll_speed_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_speed_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/roll_speed_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_speed_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/roll_speed_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/roll_speed_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/yaw_angle_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/yaw_angle"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/yaw_angle_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_angle_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/yaw_angle_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_angle_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/yaw_angle_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_angle_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/yaw_speed_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/yaw_speed"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/yaw_speed_kp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_speed_kp_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/yaw_speed_ki_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Ki"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_speed_ki_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/yaw_speed_kd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Kd"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/yaw_speed_kd_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/pitch_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PitchGo" />
+
+            <Button
+                android:id="@+id/roll_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ROLLGO" />
+
+            <Button
+                android:id="@+id/yaw_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="YAWGO" />
+
+            <Button
+                android:id="@+id/go_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="FLY" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/start_orientation_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Euler"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/start_device_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_device" />
+
+        <TextView
+            android:id="@+id/pid_info_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PIDInfo" />
+
+    </LinearLayout>
+
 </RelativeLayout>
