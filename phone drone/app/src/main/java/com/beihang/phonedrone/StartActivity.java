@@ -313,7 +313,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
             }
         }
     }
-
+    //测试Pitch的PID参数
     private void testPitch() {
         String speedKp = pitchSpeedKpEt.getText().toString();
         String speedKi = pitchSpeedKiEt.getText().toString();
@@ -325,9 +325,14 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
             showToast("请至少给出内环参数！");
             return;
         }
-        float sKp = Float.parseFloat(speedKp);
-        float sKi = Float.parseFloat(speedKi);
-        float sKd = Float.parseFloat(speedKd);
+        float sKp = getInput(speedKp);
+        float sKi = getInput(speedKi);
+        float sKd = getInput(speedKd);
+        float aKp = getInput(angleKp);
+        float aKi = getInput(angleKi);
+        float aKd = getInput(angleKd);
+        flightControl.resetPID();  //PID累计误差和微分清零
+        //如果没有给出外环参数，内环PID测试开始
         if (angleKp.equals("")) {
             StringBuffer sb = new StringBuffer();
             sb.append("Pitch内环PID测试:\n").append("Kp:" + speedKp).append("Ki:" + speedKi).append("Kd:" + speedKd);
@@ -348,6 +353,46 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                             showToast("Mission Cancelled");
                             break;
                         } else {
+                            //传入参数为当前Pitch，目标Pitch（0），当前角速度
+                            int output = (int) flightControl.calPitch(orientationValues[1], 0, gyroscopeValues[0]);
+                            //电机输出以1500为基础，加减输出量
+                            int code = setMotor(output, 0, 0, 1500);
+                            if (code == -1) {
+                                showToast("Check SerialPort!");
+                                break;
+                            }
+                        }
+                    }
+                    if (serialPort != null) {
+                        serialPort.close();  //线程结束之后关闭串口，不然会一直发送（不知道为什么）
+                    }
+                    isRunning = false;
+                }
+            });
+            mControlThread.start();
+        } else {
+            isRunning = true;
+            showToast("Pitch双环测试开始");
+            StringBuffer sb = new StringBuffer();
+            sb.append("Pitch双环PID测试:\n").append("内环：Kp:" + speedKp).append("Ki:" + speedKi).append("Kd:" + speedKd + "\n");
+            sb.append("外环：Kp:" + angleKp).append("Ki:" + angleKi).append("Kd:" + angleKd);
+            updatePIDText(sb.toString());
+
+            flightControl.setPitchSpeedPID(sKp, sKi, sKd);
+            flightControl.setPitchAnglePID(aKp, aKi, aKd);
+
+            mControlThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (serialPort != null && !serialPort.isOpen()) {
+                        openSerial();
+                    }
+
+                    while (isRunning) {
+                        if (orientationValues[1] > 30 || orientationValues[1] < -30) {
+                            showToast("Mission Cancelled");
+                            break;
+                        } else {
                             int output = (int) flightControl.calPitch(orientationValues[1], 0, gyroscopeValues[0]);
                             int code = setMotor(output, 0, 0, 1500);
                             if (code == -1) {
@@ -359,11 +404,10 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                     if (serialPort != null) {
                         serialPort.close();  //线程结束之后关闭串口，不然会一直发送（不知道为什么）
                     }
+                    isRunning = false;
                 }
             });
             mControlThread.start();
-        } else {
-            showToast("Pitch双环测试开始");
         }
 
     }
@@ -373,12 +417,20 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         motorDuty[1] = throttle - pitch + roll - yaw;
         motorDuty[2] = throttle + pitch + roll + yaw;
         motorDuty[3] = throttle + pitch - roll - yaw;
+        limitOutput(motorDuty);
         String sb = Arrays.toString(motorDuty);
         if (serialPort != null && serialPort.isOpen()) {
             serialPort.write(sb.getBytes());
             return 0;
         } else {
             return -1;
+        }
+    }
+
+    private void limitOutput(int[] input) {
+        for(int i = 0; i < input.length; i++){
+            if (input[i]<1000) input[i] = 1000;
+            if (input[i]>2000) input[i] = 2000;
         }
     }
 
@@ -434,5 +486,12 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 Toast.makeText(StartActivity.this, str, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private float getInput(String input) {
+        if (input.equals("")) {
+            return 0;
+        }
+        else return Float.parseFloat(input);
     }
 }

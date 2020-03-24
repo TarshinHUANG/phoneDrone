@@ -6,7 +6,7 @@
     <string name="no_device">No device found</string>
     <string name="Euler">欧拉角：</string>
     <string name="pitch_angle">Pitch角度外环：</string>
-    <string name="pitch_speed">Pitch角速度外环：</string>
+    <string name="pitch_speed">Pitch角速度内环：</string>
     <string name="roll_angle">Roll角度外环：</string>
     <string name="roll_speed">Roll角速度内环：</string>
     <string name="yaw_angle">Yaw角度外环：</string>
