@@ -80,6 +80,8 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     private UsbDeviceConnection connection;
     private UsbSerialDevice serialPort;  //串口对象
     private Control flightControl;  //姿态控制对象
+    private filter filterAcc=new filter(); //加速度滤波器
+    private filter filterGyro=new filter(); //角速度滤波器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +115,9 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     protected void onResume() {
         super.onResume();
         //注册传感器listener，传感器数据发生变化的时候就会回调onSensorChanged()函数
-        mSensorManager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this,gyroscope,SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this,magnetic,SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this,gyroscope,SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this,magnetic,SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -134,9 +136,19 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         switch(sensorType) {
             case Sensor.TYPE_ACCELEROMETER:
                 accelerometerValues = event.values;
+                //加速度IIR滤波
+                filterAcc.IIR(accelerometerValues);
+                for(int i =0;i<3;i++){
+                    accelerometerValues[i]=filterAcc.outData[i][0];
+                }
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 gyroscopeValues = event.values;
+                //角速度一阶滤波
+                filterGyro.LPF(gyroscopeValues);
+                for(int i=0;i<3;i++){
+                    gyroscopeValues[i]=filterGyro.outData1[i];
+                }
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 magneticValues = event.values;
@@ -351,6 +363,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                     while (isRunning) {
                         if (orientationValues[1] > 30 || orientationValues[1] < -30) {
                             showToast("Mission Cancelled");
+                            serialPort.write("s".getBytes());
                             break;
                         } else {
                             //传入参数为当前Pitch，目标Pitch（0），当前角速度
@@ -391,6 +404,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                     while (isRunning) {
                         if (orientationValues[1] > 30 || orientationValues[1] < -30) {
                             showToast("Mission Cancelled");
+                            serialPort.write("s".getBytes());
                             break;
                         } else {
                             int output = (int) flightControl.calPitch(orientationValues[1], 0, gyroscopeValues[0]);

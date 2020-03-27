@@ -31,6 +31,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     StringBuffer sb1 = new StringBuffer();
     StringBuffer sb2 = new StringBuffer();
     StringBuffer sb3 = new StringBuffer();
+    private filter filterAcc=new filter(); //加速度滤波器
+    private filter filterGyro=new filter(); //角速度滤波器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +49,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this,gyroscope,SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this,magnetic,SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this,gyroscope,SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this,magnetic,SensorManager.SENSOR_DELAY_GAME);
         Log.d(TAG,"onResume");
     }
 
@@ -79,6 +81,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         switch (sensorType) {
             case Sensor.TYPE_ACCELEROMETER:
                 accelerometerValues = event.values;
+                //加速度IIR滤波
+                filterAcc.IIR(accelerometerValues);
+                for(int i =0;i<3;i++){
+                    accelerometerValues[i]=filterAcc.outData[i][0];
+                }
                 sb1 = new StringBuffer();
                 Utils.addLineToSB(sb1,"Accelerometer",null);
                 Utils.addLineToSB(sb1,"acc_X",accelerometerValues[0]);
@@ -87,6 +94,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 gyroscopeValues = event.values;
+                //角速度一阶滤波
+                filterGyro.LPF(gyroscopeValues);
+                for(int i=0;i<3;i++){
+                    gyroscopeValues[i]=filterGyro.outData1[i];
+                }
                 sb2 = new StringBuffer();
                 Utils.addLineToSB(sb2,"Gyroscope",null);
                 Utils.addLineToSB(sb2,"gyr_X",gyroscopeValues[0]);
