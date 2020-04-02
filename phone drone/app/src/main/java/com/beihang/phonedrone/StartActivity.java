@@ -13,6 +13,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,12 +27,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 
+import tw.com.flag.api.FlagBt;
+import tw.com.flag.api.OnFlagMsgListener;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class StartActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
+public class StartActivity extends AppCompatActivity implements SensorEventListener, OnFlagMsgListener, View.OnClickListener {
     public final String TAG = StartActivity.class.getName();
     public final String ACTION_USB_PERMISSION = "com.beihang.phonedrone.USB_PERMISSION";
 
@@ -62,6 +66,8 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     private Button yawBtn;
     private Button flyBtn;
     private TextView pidInfoTv;
+    private Button bluetoothBtn;
+
 
     private SensorManager mSensorManager;
     private Sensor accelerometer;
@@ -82,6 +88,8 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     private Control flightControl;  //姿态控制对象
     private filter filterAcc=new filter(); //加速度滤波器
     private filter filterGyro=new filter(); //角速度滤波器
+    private FlagBt bluetooth;
+    private Thread mBluetoothThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         setContentView(R.layout.activity_start);
 
         initUI();
+        bluetooth = new FlagBt(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         assert mSensorManager != null;
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);  //加速度
@@ -507,5 +516,46 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
             return 0;
         }
         else return Float.parseFloat(input);
+    }
+
+    // 点击蓝牙连接按钮
+    public void connect (View v){
+        if(!bluetooth.connect()){
+            showToast("找不到任何已配对的设备");
+        }
+    }
+    @Override
+    public void onFlagMsg(Message msg) {
+        switch(msg.what){
+            case FlagBt.CONNECTING:
+                showToast("正在连接到："+bluetooth.getDeviceName());
+                break;
+            case FlagBt.CONNECTED:
+                showToast("已连接到："+bluetooth.getDeviceName());
+                //开一个线程
+                mBluetoothThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        float temp=0;
+                        while (isRunning) {
+                            if(accelerometerValues[0]!=temp)
+                            {
+                                bluetooth.write("["+accelerometerValues[0]+","+accelerometerValues[1]+","+accelerometerValues[2]+"]");
+                                showToast("["+accelerometerValues[0]+","+accelerometerValues[1]+","+accelerometerValues[2]+"]");
+                                temp=accelerometerValues[0];
+                            }
+                        }
+                    }
+                });
+                mBluetoothThread.start();
+                isRunning=true;
+                break;
+            case FlagBt.CONNECT_FAIL:
+                showToast("连接失败！请重连");
+                break;
+            case FlagBt.CONNECT_LOST:
+                showToast("连接中断！请重连");
+                break;
+        }
     }
 }

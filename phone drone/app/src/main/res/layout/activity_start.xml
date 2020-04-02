@@ -445,6 +445,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="FLY" />
+
+            <Button
+                android:id="@+id/bluetooth_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="connect"
+                android:text="Bluetooth" />
         </LinearLayout>
 
         <TextView
