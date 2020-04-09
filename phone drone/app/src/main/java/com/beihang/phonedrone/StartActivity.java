@@ -1,8 +1,13 @@
 package com.beihang.phonedrone;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
@@ -13,7 +18,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,17 +31,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 
-import tw.com.flag.api.FlagBt;
-import tw.com.flag.api.OnFlagMsgListener;
-
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
 
-public class StartActivity extends AppCompatActivity implements SensorEventListener, OnFlagMsgListener, View.OnClickListener {
+public class StartActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
     public final String TAG = StartActivity.class.getName();
     public final String ACTION_USB_PERMISSION = "com.beihang.phonedrone.USB_PERMISSION";
+    private final UUID BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private TextView titleTv;
     private TextView eulerTv;
@@ -81,6 +86,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
     private Thread mControlThread;
     private boolean isRunning = false;
+    private boolean isBlueRunning = false;
     private UsbManager mUsbManager;
     private UsbDevice device;
     private UsbDeviceConnection connection;
@@ -88,8 +94,11 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     private Control flightControl;  //姿态控制对象
     private filter filterAcc=new filter(); //加速度滤波器
     private filter filterGyro=new filter(); //角速度滤波器
-    private FlagBt bluetooth;
-    private Thread mBluetoothThread;
+
+    private BluetoothAdapter mBluetoothAdapter;
+    private ArrayList<BluetoothDevice> blueLists = new ArrayList<>();
+    private ArrayList<String> blueNameLists = new ArrayList<String>();
+    private Thread blueThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +106,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         setContentView(R.layout.activity_start);
 
         initUI();
-        bluetooth = new FlagBt(this);
+//        bluetooth = new FlagBt(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         assert mSensorManager != null;
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);  //加速度
@@ -118,6 +127,21 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         searchUsbDevice();
         openSerial();
         flightControl = new Control();
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            showToast("Bluetooth not available");
+            Log.e(TAG, "Bluetooth not available");
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter.enable();  //开启蓝牙
+            }
+        }
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter2.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter2.addAction(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(blueReceiver, filter2);   //蓝牙扫描状态监听（广播）
     }
 
     @Override
@@ -207,6 +231,9 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 //testYaw();
                 break;
             case R.id.go_btn:
+                break;
+            case R.id.bluetooth_btn:
+                connect();
                 break;
         }
     }
@@ -372,7 +399,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                     while (isRunning) {
                         if (orientationValues[1] > 30 || orientationValues[1] < -30) {
                             showToast("Mission Cancelled");
-                            serialPort.write("s".getBytes());
+                            serialPort.write("stop".getBytes());
                             break;
                         } else {
                             //传入参数为当前Pitch，目标Pitch（0），当前角速度
@@ -409,7 +436,6 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                     if (serialPort != null && !serialPort.isOpen()) {
                         openSerial();
                     }
-
                     while (isRunning) {
                         if (orientationValues[1] > 30 || orientationValues[1] < -30) {
                             showToast("Mission Cancelled");
@@ -423,6 +449,10 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                                 break;
                             }
                         }
+                        try{
+                            Thread.currentThread().sleep(15);//毫
+                        }
+                        catch (Exception e){}
                     }
                     if (serialPort != null) {
                         serialPort.close();  //线程结束之后关闭串口，不然会一直发送（不知道为什么）
@@ -441,7 +471,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         motorDuty[2] = throttle + pitch + roll + yaw;
         motorDuty[3] = throttle + pitch - roll - yaw;
         limitOutput(motorDuty);
-        String sb = Arrays.toString(motorDuty);
+        String sb ='['+ String.valueOf(motorDuty[0])+','+ String.valueOf(motorDuty[1])+','+ String.valueOf(motorDuty[2])+','+ String.valueOf(motorDuty[3])+']';
         if (serialPort != null && serialPort.isOpen()) {
             serialPort.write(sb.getBytes());
             return 0;
@@ -467,8 +497,8 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 StartActivity.this.finish();
             }
         });
-        eulerTv = (TextView) findViewById(R.id.start_orientation_tv);
-        usbDeviceTv = (TextView) findViewById(R.id.start_device_tv);
+        eulerTv = findViewById(R.id.start_orientation_tv);
+        usbDeviceTv = findViewById(R.id.start_device_tv);
         pitchAngleKpEt = findViewById(R.id.pitch_angle_kp_et);
         pitchAngleKiEt = findViewById(R.id.pitch_angle_ki_et);
         pitchAngleKdEt = findViewById(R.id.pitch_angle_kd_et);
@@ -492,10 +522,12 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         rollBtn = findViewById(R.id.roll_btn);
         yawBtn = findViewById(R.id.yaw_btn);
         flyBtn = findViewById(R.id.go_btn);
+        bluetoothBtn = findViewById(R.id.bluetooth_btn);
         pitchBtn.setOnClickListener(this);
         rollBtn.setOnClickListener(this);
         yawBtn.setOnClickListener(this);
         flyBtn.setOnClickListener(this);
+        bluetoothBtn.setOnClickListener(this);
     }
 
     private void updatePIDText(String symbol) {
@@ -519,43 +551,67 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     }
 
     // 点击蓝牙连接按钮
-    public void connect (View v){
-        if(!bluetooth.connect()){
-            showToast("找不到任何已配对的设备");
+    private void connect (){
+        blueLists.clear(); //每次扫描前清除蓝牙列表
+        blueNameLists.clear();
+        if (mBluetoothAdapter != null) {
+            mBluetoothAdapter.startDiscovery();
         }
     }
-    @Override
-    public void onFlagMsg(Message msg) {
-        switch(msg.what){
-            case FlagBt.CONNECTING:
-                showToast("正在连接到："+bluetooth.getDeviceName());
-                break;
-            case FlagBt.CONNECTED:
-                showToast("已连接到："+bluetooth.getDeviceName());
-                //开一个线程
-                mBluetoothThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        float temp=0;
-                        while (isRunning) {
-                            if(accelerometerValues[0]!=temp)
-                            {
-                                bluetooth.write("["+accelerometerValues[0]+","+accelerometerValues[1]+","+accelerometerValues[2]+"]");
-                                showToast("["+accelerometerValues[0]+","+accelerometerValues[1]+","+accelerometerValues[2]+"]");
-                                temp=accelerometerValues[0];
-                            }
+
+
+    private BroadcastReceiver blueReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
+                showToast("Bluetooth discovery finished");
+                Set<BluetoothDevice> pairedDevices= mBluetoothAdapter.getBondedDevices();  //已配对的设备
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        if (blueLists.contains(device)) {
+                            continue;
                         }
+                        blueLists.add(device);
+                        blueNameLists.add(device.getName());
+                    }
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(StartActivity.this); //设备选择对话框
+                builder.setTitle("Bluetooth");
+                builder.setItems(blueNameLists.toArray(new CharSequence[blueNameLists.size()]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BluetoothDevice device = blueLists.get(which);
+                        connectDevice(device);
                     }
                 });
-                mBluetoothThread.start();
-                isRunning=true;
-                break;
-            case FlagBt.CONNECT_FAIL:
-                showToast("连接失败！请重连");
-                break;
-            case FlagBt.CONNECT_LOST:
-                showToast("连接中断！请重连");
-                break;
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+            if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
+                showToast("Bluetooth Discovery started");
+            }
+            if (action.equals((BluetoothDevice.ACTION_FOUND))) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                blueLists.add(device);
+                blueNameLists.add(device.getName());
+                Log.d(TAG, "Bluetooth device found");
+            }
+        }
+    };
+
+    private void connectDevice(BluetoothDevice device) {
+        try {
+            //创建Socket
+            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(BT_UUID);
+            //启动连接线程
+            blueThread = new ConnectThread(socket, true);
+            blueThread.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+
+
 }
